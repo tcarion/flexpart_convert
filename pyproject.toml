@@ -1,12 +1,14 @@
 [project]
 name = "flexpart-convert"
 version = "0.1.0"
-description = ""
 authors = [
     {name = "tcarion",email = "tristancarion@gmail.com"}
 ]
+description = "Convert the FLEXPART Lagrangian outputs from netCDF to other geo format (geotif, kml, geojson) "
 readme = "README.md"
 requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
 dependencies = [
 ]
 
