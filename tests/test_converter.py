@@ -87,7 +87,7 @@ def test_convert_with_height_dimension(flexpart_nc_path, tmp_path):
 def test_convert_invalid_variable(flexpart_nc_path):
     """Test conversion with invalid variable."""
     converter = NetCDFConverter(flexpart_nc_path)
-    with pytest.raises(ValueError):
+    with pytest.raises(KeyError):
         converter.convert(
             variable="invalid_var",
             output_format="tif",
