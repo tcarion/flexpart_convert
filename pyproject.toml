@@ -12,6 +12,10 @@ license-files = ["LICEN[CS]E*"]
 dependencies = [
 ]
 
+[project.urls]
+Homepage = "https://github.com/tcarion/flexpart_convert"
+Issues = "https://github.com/tcarion/flexpart_convert/issues"
+
 [tool.poetry]
 packages = [{include = "flexpart_convert", from = "src"}]
 
