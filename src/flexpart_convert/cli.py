@@ -73,7 +73,7 @@ def interactive_conversion():
                         print(f"Invalid selection: {e}")
         
         # Select output format
-        formats = ["tif", "geojson", "kml"]
+        formats = ["geotiff", "geojson", "kml"]
         print("\nAvailable output formats:")
         for i, fmt in enumerate(formats, 1):
             print(f"{i}. {fmt}")
@@ -127,7 +127,7 @@ def main():
     )
     parser.add_argument(
         "-f", "--format", 
-        choices=["tif", "geojson", "kml"],
+        choices=["geotiff", "geojson", "kml"],
         help="Output format",
         required=True,
     )

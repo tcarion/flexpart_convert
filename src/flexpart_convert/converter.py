@@ -1,9 +1,8 @@
-import argparse
-import sys
 import itertools
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
+import geojson
 import numpy as np
 import xarray as xr
 import rioxarray as rio
@@ -52,7 +51,7 @@ class NetCDFConverter:
     def convert(
         self,
         variable: str = "spec001_mr",
-        output_format: str = "tif",
+        output_format: str = "geotiff",
         output_dir: Union[str, Path] = ".",
         dim_selections: Optional[Dict[str, Union[int, float, str]]] = None,
     ) -> List[Path]:
@@ -60,7 +59,7 @@ class NetCDFConverter:
         
         Args:
             variable: Variable name to convert
-            output_format: One of 'tif', 'geojson', or 'kml'
+            output_format: One of 'geotiff', 'geojson', or 'kml'
             output_dir: Directory to save output files
             dim_selections: Dictionary of dimension selections (e.g., {'time': 0})
             
@@ -70,7 +69,7 @@ class NetCDFConverter:
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        if output_format.lower() not in {"tif", "geojson", "kml"}:
+        if output_format.lower() not in {"geotiff", "geojson", "kml"}:
             raise ValueError(f"Unsupported output format: {output_format}")
             
         var_data = self.dataset[variable]
@@ -132,7 +131,7 @@ class NetCDFConverter:
         output_format: str,
     ) -> None:
         """Internal method to handle the actual export."""
-        if output_format.lower() == "tif":
+        if output_format.lower() == "geotiff":
             self._to_geotiff(data, output_path)
         elif output_format.lower() == "geojson":
             self._to_geojson(data, output_path)
@@ -143,11 +142,39 @@ class NetCDFConverter:
         """Export data to GeoTIFF format."""
         data.rio.set_spatial_dims(x_dim="longitude", y_dim="latitude")
         data.rio.write_crs("epsg:4326", inplace=True)
-        data.rio.to_raster(output_path)
+        data.rio.to_raster(output_path, driver="GTiff")
         
     def _to_geojson(self, data: xr.DataArray, output_path: Path) -> None:
         """Export data to GeoJSON format."""
-        raise NotImplementedError("GeoJSON export not yet implemented")
+        
+        # To improve performance, we trim the raster, getting rid of the bounding zero values
+        data = data.where(data > 0, drop=True)
+        lons = data["longitude"].values
+        lats = data["latitude"].values
+        dx = (lons[1] - lons[0]); dy = (lats[1] - lats[0])
+        geojson_features = []
+        
+        for x in lons:
+            for y in lats:
+                value = data.sel(longitude=x, latitude=y)
+                if value == 0.0: # we don't write the zero values
+                    continue
+                dx2 = dx/2
+                dy2 = dy/2
+                left = x - dx2; right = x + dx2; lower = y - dy2; upper = y + dy2
+                cell_coords = (
+                    (float(left), float(lower)),
+                    (float(left), float(upper)),
+                    (float(right), float(upper)),
+                    (float(right), float(lower)),
+                )
+                polygon = geojson.Polygon(cell_coords)
+                properties = {"value": float(value)}
+                feature = geojson.Feature(geometry=polygon, properties=properties)
+                geojson_features.append(feature)
+                
+        with open(output_path, "w") as f:
+            geojson.dump(geojson.FeatureCollection(geojson_features), f)
         
     def _to_kml(self, data: xr.DataArray, output_path: Path) -> None:
         """Export data to KML format."""

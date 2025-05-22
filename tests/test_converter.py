@@ -28,7 +28,7 @@ def test_convert_spec001_time_slices(flexpart_nc_path, tmp_path):
     converter = NetCDFConverter(flexpart_nc_path)
     results = converter.convert(
         variable="spec001_mr",
-        output_format="tif",
+        output_format="geotiff",
         output_dir=tmp_path
     )
     
@@ -44,7 +44,7 @@ def test_convert_spec001_fixed_time(flexpart_nc_path, tmp_path):
     converter = NetCDFConverter(flexpart_nc_path)
     results = converter.convert(
         variable="spec001_mr",
-        output_format="tif",
+        output_format="geotiff",
         output_dir=tmp_path,
         dim_selections={"time": 0, "nageclass": 0, "pointspec": 0, "height": 0}
     )
@@ -59,7 +59,7 @@ def test_convert_wd_spec001(flexpart_nc_path, tmp_path):
     converter = NetCDFConverter(flexpart_nc_path)
     results = converter.convert(
         variable="WD_spec001",
-        output_format="tif",
+        output_format="geotiff",
         output_dir=tmp_path,
         dim_selections={"nageclass": 0, "pointspec": 0}
     )
@@ -74,7 +74,7 @@ def test_convert_with_height_dimension(flexpart_nc_path, tmp_path):
     converter = NetCDFConverter(flexpart_nc_path)
     results = converter.convert(
         variable="spec001_mr",
-        output_format="tif",
+        output_format="geotiff",
         output_dir=tmp_path,
         dim_selections={"time": 0, "nageclass": 0, "pointspec": 0}
     )
@@ -90,7 +90,7 @@ def test_convert_invalid_variable(flexpart_nc_path):
     with pytest.raises(KeyError):
         converter.convert(
             variable="invalid_var",
-            output_format="tif",
+            output_format="geotiff",
             output_dir="."
         )
     converter.close()
@@ -100,7 +100,7 @@ def test_convert_oro_variable(flexpart_nc_path, tmp_path):
     converter = NetCDFConverter(flexpart_nc_path)
     results = converter.convert(
         variable="ORO",
-        output_format="tif",
+        output_format="geotiff",
         output_dir=tmp_path
     )
     

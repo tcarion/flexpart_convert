@@ -29,7 +29,7 @@ def test_cli_main_flexpart_spec001(mock_converter, capsys, flexpart_nc_path):
     test_args = [
         str(flexpart_nc_path),
         "-v", "spec001_mr",
-        "-f", "tif",
+        "-f", "geotiff",
         "-d", "nageclass", "0",
         "-d", "pointspec", "0",
         "-d", "height", "0"
@@ -53,7 +53,7 @@ def test_cli_main_flexpart_oro(mock_converter, capsys, flexpart_nc_path):
     test_args = [
         str(flexpart_nc_path),
         "-v", "ORO",
-        "-f", "tif"
+        "-f", "geotiff"
     ]
     
     with patch("sys.argv", ["flexpart_convert"] + test_args):
