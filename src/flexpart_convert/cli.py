@@ -119,7 +119,12 @@ def main():
         description="Convert NetCDF files to geospatial formats (GeoTIFF, GeoJSON, KML)"
     )
     parser.add_argument("input_file", help="Input NetCDF file path")
-    parser.add_argument("-v", "--variable", help="Variable to convert", required=True)
+    parser.add_argument(
+        "-v", "--variable",
+        default="spec001_mr",
+        help="Variable to convert",
+        required=True
+    )
     parser.add_argument(
         "-f", "--format", 
         choices=["tif", "geojson", "kml"],
