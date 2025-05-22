@@ -157,7 +157,7 @@ class NetCDFConverter:
         for x in lons:
             for y in lats:
                 value = data.sel(longitude=x, latitude=y)
-                if value == 0.0: # we don't write the zero values
+                if (value == 0.0) or (np.isnan(value)): # we don't write the zero values
                     continue
                 dx2 = dx/2
                 dy2 = dy/2
@@ -168,7 +168,7 @@ class NetCDFConverter:
                     (float(right), float(upper)),
                     (float(right), float(lower)),
                 )
-                polygon = geojson.Polygon(cell_coords)
+                polygon = geojson.Polygon([cell_coords])
                 properties = {"value": float(value)}
                 feature = geojson.Feature(geometry=polygon, properties=properties)
                 geojson_features.append(feature)
