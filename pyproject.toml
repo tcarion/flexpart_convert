@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-nc2geo = "flexpart_convert.cli:main"
+flexpart_convert = "flexpart_convert.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/tcarion/flexpart_convert"
